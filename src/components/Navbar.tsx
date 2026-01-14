@@ -5,6 +5,7 @@ import { navlinks } from "../data/navlinks";
 import type { INavLink } from "../types";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.svg";
+import Login from "./Login";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -38,10 +39,13 @@ export default function Navbar() {
           </Link>
         </div>
 
-        <button className="hidden md:block px-6 py-2.5 bg-pink-600 hover:bg-pink-700 active:scale-95 transition-all rounded-full">
+        <button
+          onClick={() => navigate("/login")}
+          className="hidden md:block px-6 py-2.5 bg-pink-600 hover:bg-pink-700 active:scale-95 transition-all rounded-full"
+        >
           Get Started
         </button>
-        <button onClick={() => navigate("/login")} className="md:hidden">
+        <button className="md:hidden">
           <MenuIcon size={26} className="active:scale-90 transition" />
         </button>
       </motion.nav>

@@ -13,7 +13,7 @@ const AspectRatioSelector = ({
   const iconMap = {
     "16:9": <RectangleHorizontal className="size-6" />,
     "1:1": <Square className="size-6" />,
-    "9:6": <RectangleVertical className="size-6" />,
+    "9:16": <RectangleVertical className="size-6" />,
   } as Record<AspectRatio, React.ReactNode>;
   return (
     <div className="space-y-3 dark">

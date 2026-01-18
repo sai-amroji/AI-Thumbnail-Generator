@@ -1,6 +1,11 @@
-import React from "react";
 import type { AspectRatio, IThumbnail } from "../assets/assets";
 import { DownloadIcon, ImageIcon, Loader2Icon } from "lucide-react";
+
+const getHeight = (ratio: AspectRatio) => {
+  if (ratio === "16:9") return "56.25%";
+  if (ratio === "1:1") return "100%";
+  return "177.77%"; // 9:16
+};
 
 const PreviewPanel = ({
   thumbnail,
@@ -8,75 +13,53 @@ const PreviewPanel = ({
   aspectRatio,
 }: {
   thumbnail: IThumbnail | null;
-  isLoading: boolean;
+  isLoading?: boolean;
   aspectRatio: AspectRatio;
 }) => {
-  const aspectClasses: Record<AspectRatio, string> = {
-    "16:9": "aspect-video",
-    "1:1": "aspect-square",
-    "9:16": "aspect-[9/16]",
-  };
-
   const onDownload = () => {
     if (!thumbnail?.image_url) return;
     window.open(thumbnail.image_url, "_blank");
   };
 
   return (
-    <div className="relative mx-auto w-full max-w-2xl">
-      <div
-        className={`relative overflow-hidden rounded-xl bg-black/40 
-        ${aspectClasses[aspectRatio]}`}
-      >
-        {/* Loading state */}
+    <div className="relative w-full max-w-2xl mx-auto">
+      <div className="relative w-full rounded-xl bg-black/40 overflow-hidden">
+        {/* Aspect-ratio replacement */}
+        <div style={{ paddingTop: getHeight(aspectRatio) }} />
+
+        {/* Loader */}
         {isLoading && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-black/25">
-            <Loader2Icon className="size-8 animate-spin text-zinc-400" />
-            <div className="text-center">
-              <p className="text-sm font-medium text-zinc-200">
-                AI is creating your thumbnail…
-              </p>
-              <p className="mt-1 text-xs text-zinc-400">
-                This may take 10–20 seconds
-              </p>
-            </div>
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/30">
+            <Loader2Icon className="animate-spin text-white size-8" />
+            <p className="text-sm text-white mt-2">Generating thumbnail…</p>
           </div>
         )}
 
-        {/* Image preview */}
+        {/* Image */}
         {!isLoading && thumbnail?.image_url && (
-          <div className="group relative h-full w-full">
-            <img
-              src={thumbnail.image_url}
-              alt={thumbnail.title}
-              className="h-full w-full object-cover"
-            />
-
-            <button
-              onClick={onDownload}
-              type="button"
-              className="absolute bottom-3 right-3 flex items-center gap-2 rounded-md
-              bg-black/60 px-3 py-1.5 text-xs text-white
-              opacity-0 transition group-hover:opacity-100"
-            >
-              <DownloadIcon className="size-4" />
-              Download
-            </button>
-          </div>
+          <img
+            src={thumbnail.image_url}
+            alt={thumbnail.title}
+            className="absolute inset-0 w-full h-full object-cover"
+          />
         )}
 
-        {/* Empty state */}
+        {/* Download */}
+        {!isLoading && thumbnail?.image_url && (
+          <button
+            onClick={onDownload}
+            className="absolute bottom-3 right-3 flex items-center gap-2 bg-black/60 px-3 py-1.5 rounded-md text-white text-xs"
+          >
+            <DownloadIcon className="size-4" />
+            Download
+          </button>
+        )}
+
+        {/* Empty */}
         {!isLoading && !thumbnail?.image_url && (
-          <div className="absolute inset-0 m-2 flex flex-col items-center justify-center gap-4 rounded-lg border-2 border-dashed border-white/20 bg-black/25">
-            <ImageIcon className="size-10 text-white/50" />
-            <div className="px-4 text-center">
-              <p className="font-medium text-zinc-200">
-                Generate your first thumbnail
-              </p>
-              <p className="mt-1 text-xs text-zinc-400">
-                Fill out the form and click Generate
-              </p>
-            </div>
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-white/60">
+            <ImageIcon className="size-10" />
+            <p className="text-sm mt-2">Generate a thumbnail</p>
           </div>
         )}
       </div>
